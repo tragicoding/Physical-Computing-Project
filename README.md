@@ -12,6 +12,22 @@ Final Project for Physical Computing
 황하린
 -Hardware Engineer / Model Architect
 
+*** git branch
+- main (최종)
+- staging (시연단계...최종 직전)
+- dev(개발 통합 단계)
+- jinseo ( 백앤드)
+- kangryun(프런트앤드)
+- harin(하드웨어)
+
+- git 연결하는 방법
+git clone https://github.com/tragicoding/Physical-Computing-Project.git  //clone
+cd Physical-Computing-Project 
+git fetch 
+git checkout kangryun (혹은 harin)
+# 주의 : 항상 자신의 이름 브랜치에서 작업하시고, 제가 dev에 병합할테니, 나중에 dev에서 pull하시면 됩니다.
+# main에 push하지 마십시오.
+
 *** 백앤드 입장에서의 README.md 이므로, git push / commit 할시에 commit message에 작업수정 history 명시 바랍니다.
       프런트앤드, 아두이노 에서 다른 팀원들 로컬에서 필요한 라이브러리 패키지 필요시 팀원들과 공유 부탁해여.
       각 영역에 대한 디렉토리 구조는 임의로 정해놓은 것이므로, 자유롭게 해당 디렉토리 안에서 생성하시면 됩니다.

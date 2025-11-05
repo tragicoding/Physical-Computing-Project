@@ -49,7 +49,7 @@ git checkout kangryun (혹은 harin)
 
 0. 팀원들 workflow
    1) git clone
-      git clone https://github.com/tragicoding/Physical-Computing-Project.git
+      
    2) npm 모듈 설치
       cd server
       npm install

@@ -6,6 +6,8 @@
 # -----------------------------------
 # npm 또는 yarn으로 설치되는 패키지 디렉토리. 용량이 매우 크고, package.json을 통해 복원 가능하므로 제외.
 node_modules/
+server/node_modules/
+web/node_modules/
 
 
 # 2. 환경 변수 (Environment Variables)
@@ -57,6 +59,8 @@ Thumbs.db
 # TypeScript, Babel 등을 사용할 경우 생성되는 컴파일된 파일들.
 dist/
 build/
+web/dist/
+web/build/
 
 
 # 7. 기타 (Miscellaneous)

@@ -1,0 +1,44 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "mysql"; url = env("DATABASE_URL") }
+
+enum DeviceType { DOOR_SENSOR UMBRELLA_BIN SPEAKER }
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  pw_hash   String
+  lat       Float?
+  lon       Float?
+  devices   Device[]
+  alarms     Alarm[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Device {
+  id         Int        @id @default(autoincrement())
+  user_id   Int
+  type      DeviceType
+  name      String
+  secret    String
+  last_seen DateTime?
+  user      User       @relation(fields: [user_id], references: [id])
+  bin       UmbrellaBin?
+}
+
+model UmbrellaBin {
+  id         Int      @id @default(autoincrement())
+  device_id  Int      @unique
+  remain     Int
+  cap        Int
+  is_open    Boolean  @default(false)
+  device     Device   @relation(fields: [device_id], references: [id])
+  updated_at  DateTime @updatedAt
+}
+
+model Alarm {
+  id       Int    @id @default(autoincrement())
+  user_id  Int
+  text     String
+  user     User   @relation(fields: [user_id], references: [id])
+}

@@ -7,13 +7,13 @@ A collaborative code space for physical computing project developers.
 
 - Hwang Ha-rin (황하린)
 - Kim Jin-seo (김진서)
-- Kim Kang-ryun (김강륜)
+- Kim Gang-ryun (김강륜)
 
 ---
 
 ### **Team Roles**
 
-- **Kim Kang-ryun (김강륜):** Front-end Developer / UI Architect
+- **Kim Gang-ryun (김강륜):** Front-end Developer / UI Architect
 - **Kim Jin-seo (김진서):** Back-end Developer / Software Architect
 - **Hwang Ha-rin (황하린):** Hardware Engineer / Model Architect
 
@@ -25,7 +25,7 @@ A collaborative code space for physical computing project developers.
 - `staging`: Pre-release version for demonstration.
 - `dev`: Integration branch for developed features.
 - `jinseo`: Backend development branch.
-- `kangryun`: Frontend development branch.
+- `Gangryun`: Frontend development branch.
 - `harin`: Hardware development branch.
 
 #### **How to connect to Git:**
@@ -39,8 +39,8 @@ cd Physical-Computing-Project
 # 3. Fetch all branches
 git fetch
 
-# 4. Check out your personal branch (e.g., kangryun or harin)
-git checkout kangryun
+# 4. Check out your personal branch (e.g., Gangryun or harin)
+git checkout Gangryun
 ```
 > **Note:** Please work on your personal branch. I will merge changes into `dev`. Pull from `dev` to get the latest integrated updates. **Do not push directly to `main`**.
 

@@ -21,7 +21,8 @@ export function validate(part, schema) {
       abortEarly: false, 
       stripUnknown: true 
     });
-
+    
+    //에러 일때 클라이언트에게 보낼 메시지
     if (error) {
       const error_details = error.details.map(detail => detail.message).join(', ');
       return res.status(400).json({ 

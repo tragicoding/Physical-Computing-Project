@@ -54,7 +54,7 @@ export async function handle_door_sensor(req, res, next) {
 
     // 6. 스피커로 TTS(Text-to-Speech) 명령 전송
     const speaker = await prisma.device.findFirst({ 
-      where: { user_id: Number(user_id), type: 'SPEAKER' } 
+      where: { user_id: Number(user_id), type: 'SPEAKER' }
     });
     if (speaker) {
       await send_tts(speaker.id, voice_message);

@@ -85,54 +85,74 @@ The project uses Docker for `mysql` and `mqtt`. The current implementation with 
 
 ```
 Physical-Computing-Project/
-├─ server/                                      # Backend Root (Express App)
+│
+├─ server/                                # ⭐ Express + Prisma + MQTT Backend
 │  ├─ prisma/
-│  │  └─ schema.prisma                          # DB Schema (User, Device, UmbrellaBin, Alarm, etc.)
+│  │  └─ schema.prisma                    # DB Schema(User, Device, Bin, Alarm)
+│  │
 │  ├─ src/
 │  │  ├─ config/
-│  │  │  ├─ prisma.js                           # PrismaClient singleton
-│  │  │  └─ mqtt.js                             # MQTT Client (connect, subscribe, publish)
-│  │  ├─ middleware/
-│  │  │  ├─ auth.js                             # JWT and device secret key authentication
-│  │  │  ├─ validate.js                         # Joi validation middleware
-│  │  │  └─ error_handler.js                    # Global error handler
+│  │  │  ├─ prisma.js                     # PrismaClient Singleton
+│  │  │  └─ mqtt.js                       # MQTT Client + Topic Dispatcher
+│  │  │
 │  │  ├─ controllers/
-│  │  │  ├─ auth_ctrl.js                        # Signup/Login (JWT issuance)
-│  │  │  ├─ user_ctrl.js                        # User info, coordinates, alarm CRUD
-│  │  │  ├─ device_ctrl.js                      # Device registration/heartbeat
-│  │  │  ├─ bin_ctrl.js                         # Umbrella bin state upsert/query
-│  │  │  └─ weather_ctrl.js                     # Door sensor event -> Weather forecast -> TTS/Door command
+│  │  │  ├─ auth_ctrl.js                  # 회원가입/로그인
+│  │  │  ├─ user_ctrl.js                  # 사용자 프로필/주소/알람
+│  │  │  ├─ device_ctrl.js                # 디바이스 등록/하트비트
+│  │  │  ├─ bin_ctrl.js                   # REST 기반 Bin 상태 업데이트/조회
+│  │  │  ├─ mqtt_door_ctrl.js             # MQTT 문센서 처리
+│  │  │  └─ mqtt_bin_ctrl.js              # MQTT 우산함 상태 처리
+│  │  │
 │  │  ├─ services/
-│  │  │  ├─ weather_svc.js                      # Weather API integration
-│  │  │  └─ tts_svc.js                          # Send commands to speaker (MQTT publish)
+│  │  │  ├─ weather_svc.js                # 기상청 API 호출
+│  │  │  └─ tts_svc.js                    # MQTT → 스피커 CMD 전송
+│  │  │
+│  │  ├─ middleware/
+│  │  │  ├─ auth.js                       # JWT 인증 + Device Secret 인증
+│  │  │  ├─ validate.js                   # Joi Validation
+│  │  │  └─ error_handler.js              # 글로벌 에러 핸들러
+│  │  │
 │  │  ├─ routes/
-│  │  │  ├─ auth_routes.js                      # /api/auth/*
-│  │  │  ├─ user_routes.js                      # /api/users/*
-│  │  │  ├─ device_routes.js                    # /api/devices/*
-│  │  │  ├─ bin_routes.js                       # /api/bins/*
-│  │  │  └─ weather_routes.js                   # /api/weather/*
+│  │  │  ├─ auth_routes.js                # /api/auth
+│  │  │  ├─ user_routes.js                # /api/users
+│  │  │  ├─ device_routes.js              # /api/devices
+│  │  │  └─ bin_routes.js                 # /api/bins
+│  │  │
 │  │  └─ utils/
-│  │     └─ logger.js                           # Winston logger
-│  ├─ .env                                      # PORT, DB_URL, JWT_SECRET, etc.
-│  ├─ package.json                              # Dependencies and scripts
-│  └─ server.js                                 # App entry point
+│  │     └─ logger.js                     # winston logger
+│  │
+│  ├─ .env                                # 서버 모든 환경변수
+│  ├─ package.json
+│  └─ server.js                           # ⭐ 서버 엔트리포인트
 │
-├─ web/                                         # Frontend (React/Vite)
+│
+├─ firmware/                              # ⭐ 각 ESP32 소스코드
+│  ├─ door_sensor/
+│  │  └─ door_sensor.ino                  # door/{device_id}/sensed publish
+│  │
+│  ├─ umbrella_bin/
+│  │  └─ umbrella_bin.ino                 # bin/{device_id}/status publish
+│  │
+│  └─ speaker_tts/
+│     └─ speaker_tts.ino                  # speaker/{device_id}/cmd subscribe
+│
+│
+├─ web/                                   # ⭐ React Frontend
 │  └─ src/
-│     └─ app.tsx                                # Example of backend REST calls
+│     └─ app.tsx
 │
-├─ firmware/                                    # ESP32 (Arduino)
-│  ├─ door_sensor/door_sensor.ino               # MQTT publish
-│  ├─ umbrella_bin/umbrella_bin.ino             # MQTT publish
-│  └─ speaker_tts/speaker_tts.ino               # MQTT subscribe
-│  
-├─ deploy/
-│  └─ docker-compose.yml                        # MySQL, Mosquitto, Adminer containers
+│
+├─ deploy/                                # ⭐ Docker Infra
+│  ├─ docker-compose.yml                  # mysql + mosquitto + adminer
+│  ├─ mosquitto.conf                      # MQTT 설정파일
+│  ├─ mosquitto_passfile                  # mosquitto username/password
+│  └─ .env                                # docker 전용 환경변수(옵션)
+│
 │
 └─ docs/
-   ├─ API.md                                    # REST API specifications
-   └─ SETUP.md                                  # Local setup guide
-```
+   ├─ API.md                               # REST API 명세
+   └─ SETUP.md                             # 개발 환경 구축 가이드
+
 
 ## **2. Architecture Overview**
 

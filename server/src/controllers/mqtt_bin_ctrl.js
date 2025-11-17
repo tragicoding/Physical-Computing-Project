@@ -22,13 +22,34 @@ export async function handleBinStatus(topic, payload) {
   logger.info(`MQTT 메시지 수신 - 토픽: ${topic}, 페이로드: ${payloadString}`);
 
   try {
-    // 1. 토픽에서 device_id 추출
+    // -------------------------------
+    // 수정 전: 토픽에서 device_id(숫자) 직접 사용
+    // -------------------------------
+    // const topic_parts = topic.split('/');
+    // const device_id = Number(topic_parts[1]);
+    // if (isNaN(device_id)) {
+    //   logger.warn(`[MQTT] 토픽에서 유효한 device_id를 찾을 수 없음: ${topic}`);
+    //   return;
+    // }
+
+    // -------------------------------
+    // 수정 후: 토픽에서 serial 추출 → Device 조회
+    // -------------------------------
     const topic_parts = topic.split('/');
-    const device_id = Number(topic_parts[1]);
-    if (isNaN(device_id)) {
-      logger.warn(`[MQTT] 토픽에서 유효한 device_id를 찾을 수 없음: ${topic}`);
+    const serial = topic_parts[1]; // 예: 'bin/A1B2C3/status' → 'A1B2C3'
+
+    if (!serial) {
+      logger.warn(`[MQTT] 토픽에서 유효한 serial을 찾을 수 없음: ${topic}`);
       return;
     }
+
+    const device = await prisma.device.findUnique({ where: { serial } });
+    if (!device) {
+      logger.warn(`[MQTT] 등록되지 않은 우산함 기기(serial=${serial})에서 메시지 수신`);
+      return;
+    }
+
+    const db_device_id = device.id;
 
     // 2. 페이로드 파싱 및 유효성 검사
     const parsedPayload = JSON.parse(payloadString);
@@ -41,11 +62,11 @@ export async function handleBinStatus(topic, payload) {
 
     const { remain, cap, is_open } = value;
 
-    // 3. 비즈니스 로직 수행 (기존 mqtt.js의 로직)
+    // 3. 비즈니스 로직 수행
     await prisma.umbrellaBin.upsert({
-      where: { device_id: device_id },
+      where: { device_id: db_device_id },
       update: { remain, cap, is_open },
-      create: { device_id: device_id, remain, cap, is_open },
+      create: { device_id: db_device_id, remain, cap, is_open },
     });
 
   } catch (e) {

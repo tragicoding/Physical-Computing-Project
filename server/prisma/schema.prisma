@@ -27,12 +27,13 @@ model User {
 
 model Device {
   id         Int          @id @default(autoincrement())
-  user_id    Int
+  user_id    Int?                         // 유저에 아직 귀속되지 않을 수 있으므로 optional
   type       DeviceType
   name       String
   secret     String
+  serial     String       @unique         // 기기 스티커용 6자리 고유 ID
   last_seen  DateTime?
-  user       User         @relation(fields: [user_id], references: [id])
+  user       User?        @relation(fields: [user_id], references: [id])
   bin        UmbrellaBin?
 }
 

@@ -204,24 +204,25 @@ This is a hybrid, event-driven system combining a traditional web architecture (
 
 ## **5. API Endpoints (Frontend-Backend)**
 
-| Method/Path              | Request Body   | Response         | Description        |
-| :----------------------- | :------------- | :--------------- | :----------------- |
-| `POST /api/auth/signup`  | `{email, pw}`  | `{user_id}`      | User Signup        |
-| `POST /api/auth/login`   | `{email, pw}`  | `{token}`        | User Login (JWT)   |
-| `GET /api/users/me`      | (JWT)          | User Profile     | Get My Info        |
-| `PUT /api/users/address` | `{lat, lon}`   | `{ok, lat, lon}` | Save Coordinates   |
-| `POST /api/users/alarms` | `{alarm_text}` | `{alarm_id}`     | Add Alarm          |
-| `GET /api/users/alarms`  | -              | `{alarms:[...]}` | List Alarms        |
-| `GET /api/bins/status`   | `?device_id=`  | `{bin}`          | Get Bin Status     |
+| Method/Path                  | Request Body                        | Response           | Description        |
+| :--------------------------- | :---------------------------------- | :----------------- | :----------------- |
+| `POST /api/auth/signup`      | `{ email, pw }`                     | `{ user_id }`      | 회원가입               |
+| `POST /api/auth/login`       | `{ email, pw }`                     | `{ token }`        | 로그인(JWT)           |
+| `GET /api/users/me`          | (JWT)                               | User Profile       | 내 정보 조회            |
+| `PUT /api/users/address`     | `{ lat, lon }`                      | `{ ok, lat, lon }` | 사용자 집 주소 설정        |
+| `POST /api/users/alarms`     | `{ alarm_text }`                    | `{ alarm_id }`     | 사용자 알람 추가          |
+| `GET /api/users/alarms`      | (JWT)                               | `{ alarms:[...] }` | 알람 목록 조회           |
+| `POST /api/devices/register` | `{ serial, type, name }`            | `{ device_id }`    | 기기 등록(사용자 ↔ 기기 연결) |
+| `GET /api/bins/status`       | `?device_id=` (but 내부적으로 serial 기반) | `{ bin }`          | 우산함 상태 조회          |
+
 
 ## **6. MQTT Topics (Arduino-Backend)**
 
-| Direction  | Topic                     | Payload (JSON)                        | Description                |
-| :--------- | :------------------------ | :------------------------------------ | :------------------------- |
-| ESP → Node | `door/{sensor_id}/sensed` | `{ user_id, sensor_id, ts }`          | Proximity/door sensor event|
-| ESP → Node | `bin/{device_id}/status`  | `{ device_id, remain, cap, is_open }` | Umbrella bin status        |
-| Node → ESP | `speaker/{device_id}/cmd` | `{ type: 'tts', text: voice_msg }`    | Voice notification command |
-| Node → ESP | `box/{device_id}/cmd`     | `{ act: 'open', close_in: 10000 }`    | Open/close door command    |
+| Topic Format           | Payload(JSON)                    | Description         |
+| ---------------------- | -------------------------------- | ------------------- |
+| `door/{serial}/sensed` | `{ ts: <timestamp> }` (optional) | 문 센서 이벤트(근접/여닫힘)    |
+| `bin/{serial}/status`  | `{ remain, cap, is_open }`       | 우산함 잔여 우산 개수 / 문 열림 |
+
 
 ## **7. File Dependencies (Summary)**
 

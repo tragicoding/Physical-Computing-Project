@@ -7,7 +7,7 @@
 import 'dotenv/config'; // .env 파일 로드
 
 // --- 필수 환경변수 확인 ---
-const required_env_vars = ['DATABASE_URL', 'JWT_SECRET', 'DEVICE_SECRET', 'MQTT_HOST', 'CORS_origin'];
+const required_env_vars = ['DATABASE_URL', 'JWT_SECRET', 'DEVICE_SECRET', 'MQTT_HOST', 'CORS_ORIGIN'];
 const missing_env_vars = required_env_vars.filter(key => !process.env[key]);
 
 if (missing_env_vars.length > 0) {

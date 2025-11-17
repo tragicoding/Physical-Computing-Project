@@ -17,37 +17,44 @@
  MQTT(ESP32 ↔ 브로커 ↔ 백엔드) 페이로드/토픽 변수
 
 ESP32 → 백엔드 (Publish)
-| 토픽                        | 페이로드(JSON)                                    | 설명         
-| ------------------------- | --------------------------------------------- | ---------- 
-| `door/{sensor_id}/sensed` | `{ "user_id", "sensor_id", "ts" }`            | 센서 트리거 이벤트 
-| `bin/{device_id}/status`  | `{ "device_id", "remain", "cap", "is_open" }` | 우산함 상태 보고  
+| 토픽                     | 페이로드(JSON)                                |
+| ---------------------- | ----------------------------------------- |
+| `door/{serial}/sensed` | `{ "ts": 123456, "value": 1 }`            |
+| `bin/{serial}/status`  | `{ "remain": x, "cap": x, "is_open": x }` |
+
 
 
 백엔드 → ESP32 (Publish)
-| 토픽                           | 페이로드(JSON)                             | 설명                
-| ---------------------------- | -------------------------------------- | ----------------- 
-| `speaker/{device_id}/cmd`    | `{ "type": "tts", "text": voice_msg }` | 스피커 TTS 명령        
-| `box/{device_id}/cmd` *(옵션)* | `{ "act": "open", "close_in": 10000 }` | 우산함 문 개폐/자동 닫힘 예약 
+| 토픽                     | 페이로드(JSON)                             |
+| ---------------------- | -------------------------------------- |
+| `speaker/{serial}/cmd` | `{ "type": "tts", "text": voice_msg }` |
+| `box/{serial}/cmd`     | `{ "act": "open", "close_in": 10000 }` |
+
 
 
 
 백엔드 내부에서 계산/생성되어 외부로 전달되는 변수
-| 변수명         | 타입          | 어디서 생성            | 어디에 전달                               
-| ----------- | ----------- | ----------------- | ------------------------------------ 
-| `rain_time` | string|null | 백엔드(weather_svc)  | 프런트 응답, TTS 문구 생성에 사용                
-| `voice_msg` | string      | 백엔드(weather_ctrl) | ESP32 스피커(`speaker/{device_id}/cmd`) 
-| `alarms`    | string[]    | 백엔드(user_ctrl)    | 프런트 응답 / TTS 문구 꼬리말용                 
+| 변수명         | 타입       | 생성 위치            | 사용하는 곳                      |                 |
+| ----------- | -------- | ---------------- | --------------------------- | --------------- |
+| `rain_time` | string   | null             | `weather_svc`               | 프런트 응답 / TTS 생성 |
+| `voice_msg` | string   | `mqtt_door_ctrl` | `speaker/{serial}/cmd` 로 발행 |                 |
+| `alarms`    | string[] | `user_ctrl`      | TTS 꼬리말 문구 생성               |                 |
+        
 
 
 환경변수(.env)
-| 변수명             | 용도                                                 
-| --------------- | -------------------------------------------------- 
-| `PORT`          | 백엔드 포트                                             
-| `CORS_ORIGIN`   | 프런트 도메인 허용                                         
-| `DATABASE_URL`  | MySQL 접속 URL                                       
-| `JWT_SECRET`    | JWT 서명 시크릿                                         
-| `DEVICE_SECRET` | 디바이스 공유키(개발 단계)                                    
-| `MQTT_HOST`     | MQTT 브로커 주소(`mqtt://host:1883` 또는 `mqtts://:8883`) 
+| 변수명             | 역할 및 설명                    |
+| --------------- | -------------------------- |
+| `PORT`          | 백엔드 실행 포트                  |
+| `CORS_ORIGIN`   | 프런트에서 접근 허용할 도메인           |
+| `DATABASE_URL`  | MySQL 접속 URL               |
+| `JWT_SECRET`    | JWT 서명용 시크릿                |
+| `DEVICE_SECRET` | 일부 REST(테스트용) 디바이스 인증 키    |
+| `MQTT_HOST`     | `mqtt://localhost:1883` 형식 |
+| `MQTT_PORT`     | 기본 1883                    |
+| `MQTT_USERNAME` | Mosquitto 로그인 ID           |
+| `MQTT_PASSWORD` | Mosquitto 로그인 PW           |
+
 
 아두이노/ESP32 (MQTT 연결—예시)
 // firmware/.../main.ino
